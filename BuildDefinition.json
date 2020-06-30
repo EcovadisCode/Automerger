@@ -1,0 +1,323 @@
+{
+    "options": [
+        {
+            "enabled": false,
+            "definition": {
+                "id": "5d58cc01-7c75-450c-be18-a388ddb129ec"
+            },
+            "inputs": {
+                "branchFilters": "[\"+refs/heads/*\"]",
+                "additionalFields": "{}"
+            }
+        },
+        {
+            "enabled": false,
+            "definition": {
+                "id": "a9db38f9-9fdc-478c-b0f9-464221e58316"
+            },
+            "inputs": {
+                "workItemType": "Bug",
+                "assignToRequestor": "true",
+                "additionalFields": "{}"
+            }
+        }
+    ],
+    "triggers": [
+        {
+            "schedules": [
+                {
+                    "branchFilters": [
+                        "+refs/heads/AutomaticMergesCake"
+                    ],
+                    "timeZoneId": "Romance Standard Time",
+                    "startHours": 6,
+                    "startMinutes": 30,
+                    "daysToBuild": 31,
+                    "scheduleJobId": "55bb749a-a692-4c69-a1b7-e9fb5aba742f",
+                    "scheduleOnlyWithChanges": true
+                },
+                {
+                    "branchFilters": [
+                        "+refs/heads/AutomaticMergesCake"
+                    ],
+                    "timeZoneId": "Romance Standard Time",
+                    "startHours": 9,
+                    "startMinutes": 30,
+                    "daysToBuild": 31,
+                    "scheduleJobId": "ebc9af3e-bd5c-463b-9075-554dc047deeb",
+                    "scheduleOnlyWithChanges": true
+                },
+                {
+                    "branchFilters": [
+                        "+refs/heads/AutomaticMergesCake"
+                    ],
+                    "timeZoneId": "Romance Standard Time",
+                    "startHours": 12,
+                    "startMinutes": 30,
+                    "daysToBuild": 31,
+                    "scheduleJobId": "ec62a117-9db1-4d56-92ec-4f4ccc6e88df",
+                    "scheduleOnlyWithChanges": true
+                },
+                {
+                    "branchFilters": [
+                        "+refs/heads/AutomaticMergesCake"
+                    ],
+                    "timeZoneId": "Romance Standard Time",
+                    "startHours": 15,
+                    "startMinutes": 30,
+                    "daysToBuild": 31,
+                    "scheduleJobId": "1b1a901f-b092-4977-b46d-908a1edf894d",
+                    "scheduleOnlyWithChanges": true
+                },
+                {
+                    "branchFilters": [
+                        "+refs/heads/AutomaticMergesCake"
+                    ],
+                    "timeZoneId": "Romance Standard Time",
+                    "startHours": 18,
+                    "startMinutes": 30,
+                    "daysToBuild": 31,
+                    "scheduleJobId": "f0ac52dd-2fe8-455f-a2d7-6937b9b9217e",
+                    "scheduleOnlyWithChanges": true
+                }
+            ],
+            "triggerType": 8
+        }
+    ],
+    "variables": {
+        "SLACK_HOOK_URI": {
+            "value": "https://hooks.slack.com/services/X"
+        },
+        "system.debug": {
+            "value": "false",
+            "allowOverride": true
+        }
+    },
+    "demands": [
+        "BuildType -equals CI"
+    ],
+    "retentionRules": [
+        {
+            "branches": [
+                "+refs/heads/*"
+            ],
+            "artifacts": [],
+            "artifactTypesToDelete": [
+                "FilePath",
+                "SymbolStore"
+            ],
+            "daysToKeep": 1,
+            "minimumToKeep": 1,
+            "deleteBuildRecord": true,
+            "deleteTestResults": true
+        }
+    ],
+    "properties": {},
+    "tags": [],
+    "_links": {
+        "self": {
+            "href": "X"
+        },
+        "web": {
+            "href": "X"
+        },
+        "editor": {
+            "href": "X"
+        },
+        "badge": {
+            "href": "X"
+        }
+    },
+    "jobAuthorizationScope": 1,
+    "jobTimeoutInMinutes": 60,
+    "jobCancelTimeoutInMinutes": 5,
+    "process": {
+        "phases": [
+            {
+                "steps": [
+                    {
+                        "environment": {},
+                        "enabled": true,
+                        "continueOnError": false,
+                        "alwaysRun": false,
+                        "displayName": "Allow Git remote access",
+                        "timeoutInMinutes": 0,
+                        "condition": "succeeded()",
+                        "task": {
+                            "id": "ad5ee7de-41ec-42c8-84d0-8359bc39a4f5",
+                            "versionSpec": "1.*",
+                            "definitionType": "task"
+                        },
+                        "inputs": {
+                            "remoteName": "origin"
+                        }
+                    },
+                    {
+                        "environment": {},
+                        "enabled": true,
+                        "continueOnError": false,
+                        "alwaysRun": false,
+                        "displayName": "Use .NET Core sdk 2.2.401",
+                        "timeoutInMinutes": 0,
+                        "condition": "succeeded()",
+                        "task": {
+                            "id": "b0ce7256-7898-45d3-9cb5-176b752bfea6",
+                            "versionSpec": "0.*",
+                            "definitionType": "task"
+                        },
+                        "inputs": {
+                            "packageType": "sdk",
+                            "version": "2.2.401"
+                        }
+                    },
+                    {
+                        "environment": {},
+                        "enabled": true,
+                        "continueOnError": true,
+                        "alwaysRun": false,
+                        "displayName": "master-into-Release",
+                        "timeoutInMinutes": 0,
+                        "condition": "succeeded()",
+                        "task": {
+                            "id": "b88ea9a0-7d6e-11e5-b5de-d57d652482f7",
+                            "versionSpec": "0.*",
+                            "definitionType": "task"
+                        },
+                        "inputs": {
+                            "script": "build.cake",
+                            "target": "SyncBranches",
+                            "verbosity": "Verbose",
+                            "arguments": "-Configuration=release -sourceBranch=\"master\" -skipCodeCoverageConstraintsCheck=true -targetBranchIndex=0",
+                            "useBuildAgentNuGetExe": "false",
+                            "nugetExeDownloadLocation": "",
+                            "ToolFeedUrl": ""
+                        }
+                    },
+                    {
+                        "environment": {},
+                        "enabled": true,
+                        "continueOnError": false,
+                        "alwaysRun": false,
+                        "displayName": "Checkout",
+                        "timeoutInMinutes": 0,
+                        "condition": "succeeded()",
+                        "task": {
+                            "id": "d9bafed4-0b18-4f58-968d-86655b4d2ce9",
+                            "versionSpec": "1.*",
+                            "definitionType": "task"
+                        },
+                        "inputs": {
+                            "filename": "git",
+                            "arguments": "checkout -f origin/AutomaticMergesCake",
+                            "workingFolder": "",
+                            "failOnStandardError": "false"
+                        }
+                    },
+                    {
+                        "environment": {},
+                        "enabled": true,
+                        "continueOnError": true,
+                        "alwaysRun": false,
+                        "displayName": "Release-into-develop",
+                        "timeoutInMinutes": 0,
+                        "condition": "succeeded()",
+                        "task": {
+                            "id": "b88ea9a0-7d6e-11e5-b5de-d57d652482f7",
+                            "versionSpec": "0.*",
+                            "definitionType": "task"
+                        },
+                        "inputs": {
+                            "script": "build.cake",
+                            "target": "SyncBranches",
+                            "verbosity": "Verbose",
+                            "arguments": "-Configuration=release -skipCodeCoverageConstraintsCheck=true -sourceBranchIndex=0 -targetBranch=\"develop\" ",
+                            "useBuildAgentNuGetExe": "false",
+                            "nugetExeDownloadLocation": "",
+                            "ToolFeedUrl": ""
+                        }
+                    }
+                ],
+                "name": "Phase 1",
+                "refName": "Phase_1",
+                "condition": "succeeded()",
+                "target": {
+                    "executionOptions": {
+                        "type": 0
+                    },
+                    "allowScriptsAuthAccessOption": true,
+                    "type": 1
+                },
+                "jobAuthorizationScope": 1,
+                "jobCancelTimeoutInMinutes": 1
+            }
+        ],
+        "type": 1
+    },
+    "repository": {
+        "properties": {
+            "cleanOptions": "1",
+            "labelSources": "0",
+            "labelSourcesFormat": "$(build.buildNumber)",
+            "reportBuildStatus": "true",
+            "gitLfsSupport": "false",
+            "skipSyncSource": "false",
+            "checkoutNestedSubmodules": "false",
+            "fetchDepth": "0"
+        },
+        "id": "4db840f1-0906-4e31-9c1c-a612fe4d63d1",
+        "type": "TfsGit",
+        "name": "Borat",
+        "url": "X",
+        "defaultBranch": "refs/heads/AutomaticMergesCake",
+        "clean": "true",
+        "checkoutSubmodules": false
+    },
+    "processParameters": {},
+    "quality": 1,
+    "authoredBy": {
+        "displayName": "Bartosz Frackowiak",
+        "url": "X",
+        "_links": {
+            "avatar": {
+                "href": "X"
+            }
+        },
+        "id": "5fbd5daa-e3fd-4e73-871f-c412ba9a4ade",
+        "uniqueName": "PRD\\bfrackowiak",
+        "imageUrl": "X",
+        "descriptor": "X"
+    },
+    "drafts": [],
+    "queue": {
+        "_links": {
+            "self": {
+                "href": "X"
+            }
+        },
+        "id": 4,
+        "name": "Default",
+        "url": "X",
+        "pool": {
+            "id": 1,
+            "name": "Default"
+        }
+    },
+    "id": 208,
+    "name": "GIT-BoratSyncBranches",
+    "url": "X",
+    "uri": "vstfs:///Build/Definition/208",
+    "path": "\\misc",
+    "type": 2,
+    "queueStatus": 0,
+    "revision": 38,
+    "createdDate": "2020-05-28T07:34:16.133Z",
+    "project": {
+        "id": "abe8683c-3154-4cbc-a2a8-3d9131b33a68",
+        "name": "EcoVadisApp",
+        "url": "X",
+        "state": 1,
+        "revision": 2490453,
+        "visibility": 0,
+        "lastUpdateTime": "2020-06-19T16:17:23.383Z"
+    }
+}

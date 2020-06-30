@@ -1,0 +1,19 @@
+{
+  "IgnoreBranches": [
+    "Release-10.32"
+  ],
+  "Teams": [
+    {
+      "Channel": "team_merges",
+      "Name": "TEAM",
+      "TeamMembers": [
+        "member1@ecovadis.com",
+		    "member2@ecovadis.com",
+		    "member3@ecovadis.com",
+		    "member4@ecovadis.com",
+		    "member5@ecovadis.com",
+        "member6@ecovadis.com",
+      ]
+    }
+  ]
+}
