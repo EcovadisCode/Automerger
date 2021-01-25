@@ -61,9 +61,24 @@ public class Branch
         get { return _releaseBranchPrefix + Version; }
     }
 
+    private string GetRawVersion()
+    {
+        return FullName.Replace(_releaseBranchPrefix, "").Replace(_remotesBranchPrefix, "").Trim();
+    }
     public Version Version
     {
-        get { return new Version(FullName.Replace(_releaseBranchPrefix, "").Replace(_remotesBranchPrefix, "").Trim()); }
+        get { return new Version(GetRawVersion()); }
+    }
+
+    public bool IsValid
+    {
+        get
+        {
+            var validChars = new List<char>() { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.' };
+            var version = GetRawVersion();
+
+            return version.All(c => validChars.Contains(c));
+        }
     }
 
     public bool IsReleaseBranch
@@ -87,15 +102,15 @@ public class Branch
     }
 
     public Branch BumpVersion()
-     {
-         var v = Version;
-         var minor = v.Minor == -1 ? 0 : v.Minor;
-         var build = v.Build == -1 ? 0 : v.Build;
+    {
+        var v = Version;
+        var minor = v.Minor == -1 ? 0 : v.Minor;
+        var build = v.Build == -1 ? 0 : v.Build;
 
-         if (IsReleaseBranch)
+        if (IsReleaseBranch)
             return new Branch(new Version(v.Major, minor + 1, build));
 
-         if(IsDevelop)
+        if (IsDevelop)
             return new Branch(new Version(v.Major, minor + 2, build));
 
         return new Branch(new Version(v.Major, minor, build + 1));
@@ -190,6 +205,7 @@ public List<Branch> GetReleaseBranches()
     var releaseBranches = allBranches
                 .Where(x => !config.IgnoreBranches.Any(x.Contains))
                 .Select(x => new Branch(x.ToString()))
+                .Where(x => x.IsValid)
                 .Where(x => x.IsReleaseBranch)
                 .OrderByDescending(x => x.Version);
 
